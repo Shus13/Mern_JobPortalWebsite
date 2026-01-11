@@ -1,6 +1,6 @@
 const { Sequelize } = require("sequelize");
 
-const DATABASE_URL = "postgresql://postgres.ixchtwrpytbuezjcgkbc:%40Sushit%40133@aws-1-ap-south-1.pooler.supabase.com:6543/postgres?pgbouncer=true";
+const dburl = process.env.DATABASE_URL;
 
 const sequelize = new Sequelize(DATABASE_URL, {
   dialect: "postgres",
@@ -24,3 +24,4 @@ const connectDb = async () => {
 };
 
 module.exports = { connectDb, sequelize };
+module.exports = dburl
