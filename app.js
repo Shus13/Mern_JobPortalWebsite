@@ -13,5 +13,5 @@ app.use("/api/auth", userRouter);
 port = process.env.Port
 
 app.listen(port, () => {
-  console.log("Server is running in the port no. 4000");
+  console.log("Server is running..");
 });
