@@ -12,6 +12,10 @@ app.use("/api/auth", userRouter);
 
 port = process.env.Port
 
+ const token = jwt.sign({userId: isExistingUser.id}, "dp@12345SECRET", {
+        expiresIn: "30d"
+    })
+
 app.listen(port, () => {
   console.log("Server is running..");
 });

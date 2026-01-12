@@ -16,6 +16,7 @@ const createJob = async (req, res) => {
     userID
   })
 
+  
   res.status(201).json({message: "Job created successfully", job}); 
 }
 
