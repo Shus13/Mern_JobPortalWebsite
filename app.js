@@ -1,21 +1,26 @@
 const express = require("express");
-const { connectDb } = require("./database/dbconfig");
 const app = express();
-require("dotenv").config();
-app.use(express.json());
 
+app.use(express.json());
+app.use(express.urlencoded({extended: true}))
+
+require("dotenv").config();
+
+const { connectDb } = require("./database/dbconfig");
 connectDb();
 
 const userRouter = require ("./routes/userRoute")
-
 app.use("/api/auth", userRouter);
 
+const jobRoute = require("./routes/jobRoute")
+app.use("/api/auth", jobRoute)
+
+
+const token = jwt.sign({userId: isExistingUser.id}, "dp@12345SECRET", {
+  expiresIn: "30d"
+})
+
 port = process.env.Port
-
- const token = jwt.sign({userId: isExistingUser.id}, "dp@12345SECRET", {
-        expiresIn: "30d"
-    })
-
 app.listen(port, () => {
-  console.log("Server is running..");
+  console.log("Server is running on port ${port}");
 });

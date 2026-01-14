@@ -20,4 +20,24 @@ const createJob = async (req, res) => {
   res.status(201).json({message: "Job created successfully", job}); 
 }
 
-module.exports = {createJob};
+const getAllJobs = async (req, res)=>{
+    const jobs = await Job.findAll({
+        include: {
+            model: User,
+            attributes: ["id", "username", "userEmail"]
+        }
+    });
+    if(jobs.length ===0){
+        return res.status(400).json({
+            message: "No jobs available"
+        })
+    }
+    res.status(200).json({
+        data: jobs
+    })
+}
+
+module.exports = {
+    createJob,
+    getAllJobs
+}
