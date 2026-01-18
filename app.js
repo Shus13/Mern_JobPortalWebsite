@@ -9,18 +9,22 @@ require("dotenv").config();
 const { connectDb } = require("./database/dbconfig");
 connectDb();
 
+const jwt = require("jsonwebtoken");
+
 const userRouter = require ("./routes/userRoute")
 app.use("/api/auth", userRouter);
 
 const jobRoute = require("./routes/jobRoute")
 app.use("/api/auth", jobRoute)
 
-
-const token = jwt.sign({userId: isExistingUser.id}, "dp@12345SECRET", {
-  expiresIn: "30d"
+app.get("/", (req,res) => {
+  res.json({
+    status : 200,
+    message : "Done"
+  })
 })
 
 port = process.env.Port
 app.listen(port, () => {
-  console.log("Server is running on port ${port}");
+  console.log("Server is running on port", port);
 });

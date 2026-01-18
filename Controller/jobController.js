@@ -20,6 +20,7 @@ const createJob = async (req, res) => {
   res.status(201).json({message: "Job created successfully", job}); 
 }
 
+// Get all job
 const getAllJobs = async (req, res)=>{
     const jobs = await Job.findAll({
         include: {

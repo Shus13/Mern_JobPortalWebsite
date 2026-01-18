@@ -2,7 +2,7 @@ const { Sequelize } = require("sequelize");
 
 const dburl = process.env.DATABASE_URL;
 
-const sequelize = new Sequelize(DATABASE_URL, {
+const sequelize = new Sequelize(dburl, {
   dialect: "postgres",
   protocol: "postgres",
   dialectOptions: {
@@ -24,4 +24,3 @@ const connectDb = async () => {
 };
 
 module.exports = { connectDb, sequelize };
-module.exports = dburl
