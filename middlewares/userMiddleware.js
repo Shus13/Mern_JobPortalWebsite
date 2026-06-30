@@ -1,44 +1,31 @@
-// middleware is a function that has access to the request and response objects.
 const jwt = require('jsonwebtoken');
-const { User } = require('../model');
+const User = require('../model/userModel');  
 
 const isAuthenticated = (req, res, next) => {
+    const token = req.headers.authorization;
 
-    // token receive
-    const token = req.headers.authorization
+    console.log("Token received:", token);  
 
-    // token check
     if (!token) {
-        return res.status(400).json({
-            message: "Unauthorized access"
-        })
+        return res.status(400).json({ message: "Unauthorized access" });
     }
 
-    // token verify
     jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
         if (err) {
-            return res.status(400).json({
-                message: "Invalid token"
-            })
-        } else {
-            const userId = decoded.userId
-
-            // Check the user with the id from token
-
-            const user = await User.findByPk(userId)
-
-            if (!user) {
-                return res.status(400).json({
-                    message: "User not found"
-                })
-            }
-            req.user = user
-
-            next()
+            console.log("JWT Error:", err.message);  
+            return res.status(400).json({ message: "Invalid token" });
         }
-    })
+
+        const userId = decoded.userId;
+        const user = await User.findByPk(userId);
+
+        if (!user) {
+            return res.status(400).json({ message: "User not found" });
+        }
+
+        req.user = user;
+        next();
+    });
 }
 
-module.exports = {
-    isAuthenticated
-}
+module.exports = { isAuthenticated };

@@ -1,4 +1,4 @@
-const {Job} = require("../model/index");
+const {Job, User} = require("../model/index");
 
 const createJob = async (req, res) => {
   const { title, description, company, location, salary, userID } = req.body;
@@ -25,7 +25,7 @@ const getAllJobs = async (req, res)=>{
     const jobs = await Job.findAll({
         include: {
             model: User,
-            attributes: ["id", "username", "userEmail"]
+            attributes: ["id", "name", "email"]
         }
     });
     if(jobs.length ===0){

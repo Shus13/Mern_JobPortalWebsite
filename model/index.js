@@ -1,4 +1,4 @@
-const User = require("./UserModel");
+const User = require("./userModel");
 const Job = require("./jobModel");
 
 
