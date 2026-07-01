@@ -28,7 +28,7 @@ const Job = sequelize.define("Job", {
         type: DataTypes.STRING,
         allowNull: true
     },
-    userID: {
+    userId: {
         type: DataTypes.UUID,
         allowNull: false,
         references: {

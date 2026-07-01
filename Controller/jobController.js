@@ -1,44 +1,91 @@
-const {Job, User} = require("../model/index");
+const { Job, User } = require("../model/index");
 
+// Post job
 const createJob = async (req, res) => {
-  const { title, description, company, location, salary, userID } = req.body;
+  try {
+    const { title, description, company, location, salary } = req.body;
 
-  if(!title || !description || !location) {
-    return res.status(400).json({message: "Please provide all required fields"});
+    if (!title || !description || !company || !location) {
+      return res.status(400).json({
+        message: "Please provide all required fields",
+      });
+    }
+    if (req.user.role !== "JobProvider") {
+      return res.status(403).json({
+        message: "Only Job providers can create jobs",
+      });
+    }
+
+    const job = await Job.create({
+      title,
+      description,
+      location,
+      company,
+      salary,
+      userId: req.user.id,
+    });
+
+    res.status(201).json({
+      message: "Job created successfully",
+      job,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Internal Server Error",
+    });
   }
-
-  const job = await Job.create({
-    title,
-    description,
-    location,
-    company,
-    salary,
-    userID
-  })
-
-  
-  res.status(201).json({message: "Job created successfully", job}); 
-}
+};
 
 // Get all job
-const getAllJobs = async (req, res)=>{
+const getAllJobs = async (req, res) => {
+  try {
     const jobs = await Job.findAll({
-        include: {
-            model: User,
-            attributes: ["id", "name", "email"]
-        }
+      include: {
+        model: User,
+        attributes: ["id", "name", "email"],
+      },
     });
-    if(jobs.length ===0){
-        return res.status(400).json({
-            message: "No jobs available"
-        })
+
+    return res.status(200).json({
+      count: jobs.length,
+      jobs,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+};
+
+// Get Single Job
+const getSingleJob = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const job = await Job.findByPk(id, {
+      include: {
+        model: User,
+        attributes: ["id", "name", "email"],
+      },
+    });
+    if (!job) {
+      return res.status(404).json0({
+        message: "Job not found",
+      });
     }
-    res.status(200).json({
-        data: jobs
-    })
-}
+    return res.status(200).json(job);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Internal server Error",
+    });
+  }
+};
+
+
 
 module.exports = {
-    createJob,
-    getAllJobs
-}
+  createJob,
+  getAllJobs,
+  getSingleJob,
+};
