@@ -9,9 +9,14 @@ const Application = sequelize.define('Application', {
         defaultValue: DataTypes.UUIDV4
     },
     status: {
-        type: DataTypes.ENUM("applied", "in_review", "accepted", "rejected"),
+        type: DataTypes.ENUM(
+            "pending", 
+            "reviewed", 
+            "accepted", 
+            "rejected"
+        ),
         allowNull: false,
-        defaultValue: 'applied',
+        defaultValue: 'pending',
     },
     userId: {
         type: DataTypes.UUID,
@@ -25,7 +30,7 @@ const Application = sequelize.define('Application', {
         type: DataTypes.UUID,
         allowNull: false,
         references: {
-            model: "Users",
+            model: "Jobs",
             key: "id"
         }
     }
