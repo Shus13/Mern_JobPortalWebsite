@@ -5,6 +5,7 @@ const {isAuthenticated } = require('../middlewares/userMiddleware')
 
 Router.post("/job", isAuthenticated, createJob)
 Router.get("/jobs", getAllJobs)
+Router.get("/jobs/my", isAuthenticated, getMyJobs)
 Router.get("/jobs/:id", getSingleJob)
 Router.patch("/jobs/:id",isAuthenticated, updateJob)
 Router.delete("/jobs/:id", isAuthenticated, deleteJob)

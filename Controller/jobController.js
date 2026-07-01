@@ -145,10 +145,32 @@ const deleteJob = async (req, res) => {
   }
 };
 
+// Get Logged-in Provider's Jobs
+const getMyJobs = async (req, res) => {
+  try {
+    const jobs = await Job.findAll({
+      where: {
+        userId: req.user,
+        id,
+      },
+    });
+    return res.status(200).json({
+      count: jobs.length,
+      jobs,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+};
+
 module.exports = {
   createJob,
   getAllJobs,
   getSingleJob,
   updateJob,
   deleteJob,
+  getMyJobs
 };
