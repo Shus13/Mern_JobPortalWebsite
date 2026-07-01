@@ -17,6 +17,9 @@ app.use("/api/auth", userRouter);
 const jobRoute = require("./routes/jobRoute")
 app.use("/api/jobs", jobRoute)
 
+const applicationRoute = require("./routes/applicationRoute")
+app.use("/api/app", applicationRoute)
+
 
 port = process.env.Port
 app.listen(port, () => {
