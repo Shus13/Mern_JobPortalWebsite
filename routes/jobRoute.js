@@ -7,5 +7,6 @@ Router.post("/job", isAuthenticated, createJob)
 Router.get("/jobs", getAllJobs)
 Router.get("/jobs/:id", getSingleJob)
 Router.patch("/jobs/:id",isAuthenticated, updateJob)
+Router.delete("/jobs/:id", isAuthenticated, deleteJob)
 
 module.exports = Router;
