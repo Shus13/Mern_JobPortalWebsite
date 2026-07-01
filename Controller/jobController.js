@@ -82,10 +82,42 @@ const getSingleJob = async (req, res) => {
   }
 };
 
+// Update JOb
+const updateJob = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const job = await Job.findByPk(id);
+
+    if (!job) {
+      return res.status(404).json({
+        message: "Job not found",
+      });
+    }
+
+    if (job.userId !== req.user.id) {
+      return res.status(403).json({
+        message: "You are not authorized to update this job",
+      });
+    }
+
+    await job.update(req.body);
+
+    return res.status(200).json({
+      message: "Job updated successfully",
+      job,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Internal Server Error",
+    });
+  }
+};
 
 
 module.exports = {
   createJob,
   getAllJobs,
   getSingleJob,
+  updateJob,
 };
