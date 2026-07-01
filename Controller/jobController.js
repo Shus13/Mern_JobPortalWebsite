@@ -150,8 +150,7 @@ const getMyJobs = async (req, res) => {
   try {
     const jobs = await Job.findAll({
       where: {
-        userId: req.user,
-        id,
+        userId: req.user.id,
       },
     });
     return res.status(200).json({
