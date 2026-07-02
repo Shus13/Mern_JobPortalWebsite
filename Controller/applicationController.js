@@ -3,7 +3,7 @@ const Job = require("../model/jobModel")
 const User = require("../model/userModel")
 
 // Job Apply
-const jobApply = (req,res) => {
+const jobApply = async (req,res) => {
     try {
         const {jobId} = req.params;
 
@@ -18,7 +18,7 @@ const jobApply = (req,res) => {
         const alreadyApplied = await Application.findOne({
             where: {
                 jobId,
-                userId: req.user,
+                userId: req.user.id,
             }
         })
 
@@ -30,7 +30,7 @@ const jobApply = (req,res) => {
 
         const application = await Application.create({
             jobId,
-            userId: req.user,
+            userId: req.user.id,
         })
         return res.status(200).json({
             message: "Application submitted successfully",
@@ -38,7 +38,7 @@ const jobApply = (req,res) => {
         })
     } catch (error) {
         console.log(error)
-        return res.status(200).json({
+        return res.status(500).json({
             message: "Internal Server Error",
         })
     }
@@ -49,11 +49,11 @@ const getMyApplications = async (req,res) => {
     try {
         const applications = await Application.findAll({
             where: {
-                userId: req.user,
+                userId: req.user.id,
             },
             include: [
                 {
-                    model: job,
+                    model: Job,
                 }
             ],
             order: [["createdAt", "DESC"]]
@@ -148,7 +148,7 @@ const withdrawApplication = async (req,res) => {
         const application = await Application.findOne({
             where: {
                 id,
-                userId: req.user
+                userId: req.user.id
             }
         })
 
