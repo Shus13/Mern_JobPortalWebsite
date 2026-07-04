@@ -7,6 +7,9 @@ app.use(express.urlencoded({extended: true}))
 
 require("./model");
 
+const cors = require("cors");
+app.use(cors({ origin: "http://localhost:5173" }));
+
 const { connectDb } = require("./database/dbconfig");
 connectDb();
 const jwt = require("jsonwebtoken");

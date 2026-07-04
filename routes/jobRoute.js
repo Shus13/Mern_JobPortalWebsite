@@ -3,11 +3,11 @@ const {createJob, getAllJobs, getMyJobs, getSingleJob, updateJob, deleteJob} = r
 const {isAuthenticated } = require('../middlewares/userMiddleware')
 
 
-Router.post("/job", isAuthenticated, createJob)
-Router.get("/jobs/my", isAuthenticated, getMyJobs)
-Router.get("/jobs", getAllJobs)
-Router.get("/jobs/:id", getSingleJob)
-Router.patch("/jobs/:id",isAuthenticated, updateJob)
-Router.delete("/jobs/:id", isAuthenticated, deleteJob)
+Router.post("/", isAuthenticated, createJob)
+Router.get("/my", isAuthenticated, getMyJobs)
+Router.get("/", getAllJobs)
+Router.get("/:id", getSingleJob)
+Router.patch("/:id",isAuthenticated, updateJob)
+Router.delete("/:id", isAuthenticated, deleteJob)
 
 module.exports = Router;

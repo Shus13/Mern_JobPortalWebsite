@@ -69,7 +69,7 @@ const getSingleJob = async (req, res) => {
       },
     });
     if (!job) {
-      return res.status(404).json0({
+      return res.status(404).json({
         message: "Job not found",
       });
     }
