@@ -111,4 +111,76 @@ const loginUser = async (req, res) => {
   } 
 };
 
-module.exports = { registerUser, loginUser };
+const updateProfilePhoto = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "No photo uploaded" });
+    }
+    const filePath = `/uploads/profile-photos/${req.file.filename}`;
+    req.user.profilePhoto = filePath;
+    await req.user.save();
+
+    res.status(200).json({
+      message: "Profile photo updated",
+      profilePhoto: filePath,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const updateResume = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "No resume uploaded" });
+    }
+    const filePath = `/uploads/resumes/${req.file.filename}`;
+    req.user.resume = filePath;
+    await req.user.save();
+
+    res.status(200).json({
+      message: "Resume updated",
+      resume: filePath,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const getProfile = async (req, res) => {
+  res.status(200).json({
+    user: {
+      id: req.user.id,
+      name: req.user.name,
+      email: req.user.email,
+      role: req.user.role,
+      profilePhoto: req.user.profilePhoto,
+      resume: req.user.resume,
+    },
+  });
+};
+
+const downloadResume = async (req, res) => {
+  try {
+    if (!req.user.resume) {
+      return res.status(404).json({ message: "No resume uploaded" });
+    }
+    const filePath = path.join(__dirname, "..", req.user.resume);
+    res.download(filePath, `${req.user.name}-resume${path.extname(filePath)}`);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+module.exports = {
+  registerUser,
+  loginUser,
+  updateProfilePhoto,
+  updateResume,
+  getProfile,
+  downloadResume,
+};
+
