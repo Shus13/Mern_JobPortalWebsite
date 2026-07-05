@@ -14,7 +14,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://mern-job-portal-website-frontend.vercel.app/",
+      "https://mern-job-portal-website-frontend.vercel.app",
     ],
   }),
 );
