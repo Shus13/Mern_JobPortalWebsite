@@ -1,4 +1,4 @@
-const { jobApply, getMyApplications, getApplicantByJob, updateApplicationStatus, withdrawApplication } = require('../Controller/applicationController');
+const { jobApply, getMyApplications, getApplicantByJob, updateApplicationStatus, withdrawApplication, downloadApplicantResume } = require('../Controller/applicationController');
 const { isAuthenticated } = require('../middlewares/userMiddleware');
 
 const Router = require('express').Router();
@@ -11,6 +11,7 @@ Router.get("/my", isAuthenticated, getMyApplications)
 Router.get("/job/:jobId", isAuthenticated, getApplicantByJob)
 Router.patch("/:id/status", isAuthenticated, updateApplicationStatus)
 Router.delete("/:id", isAuthenticated, withdrawApplication)
+Router.get("/:id/resume/download", isAuthenticated, downloadApplicantResume);
 
 
 module.exports = Router;

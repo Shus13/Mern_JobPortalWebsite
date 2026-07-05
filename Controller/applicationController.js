@@ -2,6 +2,8 @@ const Application = require("../model/applicationModel")
 const Job = require("../model/jobModel")
 const User = require("../model/userModel")
 
+const path = require("path");
+
 // Job Apply
 const jobApply = async (req,res) => {
     try {
@@ -82,7 +84,7 @@ const getApplicantByJob = async (req,res) => {
             include: [
                 {
                     model: User,
-                    attributes: ["id", "name", "email"],
+                    attributes: ["id", "name", "email", "profilePhoto", "resume"],
                 }
             ],
             order: [["createdAt", "DESC"]],
@@ -170,10 +172,39 @@ const withdrawApplication = async (req,res) => {
     }
 }
 
+const downloadApplicantResume = async (req, res) => {
+  try {
+    const { id } = req.params; // application id
+    const application = await Application.findByPk(id, {
+      include: [{ model: Job }, { model: User }],
+    });
+
+    if (!application) {
+      return res.status(404).json({ message: "Application not found" });
+    }
+
+    // Only the employer who owns this job can download the applicant's resume
+    if (application.Job.userId !== req.user.id) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+
+    if (!application.User.resume) {
+      return res.status(404).json({ message: "Applicant has not uploaded a resume" });
+    }
+
+    const filePath = path.join(__dirname, "..", application.User.resume);
+    res.download(filePath, `${application.User.name}-resume${path.extname(filePath)}`);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
     jobApply,
     getMyApplications,
     getApplicantByJob,
     updateApplicationStatus,
-    withdrawApplication
+    withdrawApplication,
+    downloadApplicantResume
 }
