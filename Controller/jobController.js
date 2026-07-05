@@ -43,7 +43,7 @@ const getAllJobs = async (req, res) => {
     const jobs = await Job.findAll({
       include: {
         model: User,
-        attributes: ["id", "name", "email"],
+        attributes: ["id", "name", "email", "profilePhoto"],
       },
     });
 
@@ -65,7 +65,7 @@ const getSingleJob = async (req, res) => {
     const job = await Job.findByPk(id, {
       include: {
         model: User,
-        attributes: ["id", "name", "email"],
+        attributes: ["id", "name", "email", "profilePhoto"],
       },
     });
     if (!job) {

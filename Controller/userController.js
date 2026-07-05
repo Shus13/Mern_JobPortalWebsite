@@ -184,6 +184,39 @@ const downloadResume = async (req, res) => {
   }
 };
 
+const updateProfile = async (req, res) => {
+  try {
+    const { name, email } = req.body;
+    if (!name || !email) {
+      return res.status(400).json({ message: "Name and email are required" });
+    }
+    if (email !== req.user.email) {
+      const existing = await User.findOne({ where: { email } });
+      if (existing) {
+        return res.status(400).json({ message: "Email is already in use" });
+      }
+    }
+    req.user.name = name;
+    req.user.email = email;
+    await req.user.save();
+
+    res.status(200).json({
+      message: "Profile updated successfully",
+      user: {
+        id: req.user.id,
+        name: req.user.name,
+        email: req.user.email,
+        role: req.user.role,
+        profilePhoto: req.user.profilePhoto,
+        resume: req.user.resume,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -191,5 +224,6 @@ module.exports = {
   updateResume,
   getProfile,
   downloadResume,
+  updateProfile,
 };
 
