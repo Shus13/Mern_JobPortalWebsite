@@ -132,6 +132,11 @@ const updateProfilePhoto = async (req, res) => {
 
 const updateResume = async (req, res) => {
   try {
+    if (req.user.role !== "JobSeeker") {
+      return res.status(403).json({
+        message: "Only job seekers can upload a resume",
+      });
+    }
     if (!req.file) {
       return res.status(400).json({ message: "No resume uploaded" });
     }
