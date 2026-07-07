@@ -21,7 +21,7 @@ const User = sequelize.define("User", {
     allowNull: false,
   },
   role: {
-    type: DataTypes.ENUM("JobSeeker", "JobProvider"),
+    type: DataTypes.ENUM("JobSeeker", "JobProvider", "Admin"),
     allowNull: false,
     defaultValue: "JobSeeker",
   },
@@ -32,6 +32,14 @@ const User = sequelize.define("User", {
   resume: {
     type: DataTypes.STRING,
     allowNull: true,
+  },
+  resetPasswordToken: { 
+    type: DataTypes.STRING, 
+    allowNull: true 
+  },
+  resetPasswordExpires: { 
+    type: DataTypes.DATE, 
+    allowNull: true 
   },
 });
 
