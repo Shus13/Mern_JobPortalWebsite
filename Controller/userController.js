@@ -1,6 +1,8 @@
 const User = require("../model/userModel");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken"); // ← yo add bhayo
+const jwt = require("jsonwebtoken"); 
+const crypto = require("crypto");
+const sendEmail = require("../utils/sendEmail");
 
 const path = require("path");
 
@@ -217,6 +219,79 @@ const updateProfile = async (req, res) => {
   }
 };
 
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const user = await User.findOne({ where: { email } });
+
+    if (!user) {
+      return res.status(200).json({
+        message: "If that email is registered, a reset link has been sent.",
+      });
+    }
+
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const hashedToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+
+    user.resetPasswordToken = hashedToken;
+    user.resetPasswordExpires = new Date(Date.now() + 30 * 60 * 1000); // 30 min
+    await user.save();
+
+    const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
+
+    await sendEmail({
+      to: user.email,
+      subject: "Reset your Hirely password",
+      html: `
+        <p>You requested a password reset.</p>
+        <p>This link expires in 30 minutes:</p>
+        <a href="${resetUrl}">${resetUrl}</a>
+        <p>If you didn't request this, ignore this email.</p>
+      `,
+    });
+
+    res.status(200).json({
+      message: "If that email is registered, a reset link has been sent.",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    if (!password) {
+      return res.status(400).json({ message: "New password is required" });
+    }
+
+    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+    const user = await User.findOne({ where: { resetPasswordToken: hashedToken } });
+
+    if (!user || !user.resetPasswordExpires || user.resetPasswordExpires < new Date()) {
+      return res.status(400).json({ message: "Invalid or expired reset link" });
+    }
+
+    user.password = await bcrypt.hash(password, 10);
+    user.resetPasswordToken = null;
+    user.resetPasswordExpires = null;
+    await user.save();
+
+    res.status(200).json({ message: "Password reset successfully. Please log in." });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
@@ -225,5 +300,7 @@ module.exports = {
   getProfile,
   downloadResume,
   updateProfile,
+  forgotPassword,
+  resetPassword
 };
 

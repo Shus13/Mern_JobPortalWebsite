@@ -20,7 +20,9 @@ app.use(
 );
 
 const { connectDb } = require("./database/dbconfig");
-connectDb();
+connectDb().then(async () => {
+  await seedAdmin();
+});
 const jwt = require("jsonwebtoken");
 
 const userRouter = require("./routes/userRoute");
@@ -31,6 +33,11 @@ app.use("/api/jobs", jobRoute);
 
 const applicationRoute = require("./routes/applicationRoute");
 app.use("/api/app", applicationRoute);
+
+const adminRoute = require("./routes/adminRoute");
+app.use("/api/admin", adminRoute);
+
+const seedAdmin = require("./utils/seedAdmin");
 
 port = process.env.Port;
 app.listen(port, () => {
