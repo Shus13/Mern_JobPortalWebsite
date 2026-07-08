@@ -93,10 +93,45 @@ const deleteJobAdmin = async (req, res) => {
   }
 };
 
+// adminController.js
+const getUserById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findByPk(id, {
+      attributes: ["id", "name", "email", "role", "profilePhoto", "resume", "createdAt"],
+    });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json({ user });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const path = require("path"); 
+const downloadUserResume = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findByPk(id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user.resume) return res.status(404).json({ message: "This user has not uploaded a resume" });
+
+    const filePath = path.join(__dirname, "..", user.resume);
+    res.download(filePath, `${user.name}-resume${path.extname(filePath)}`);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 module.exports = {
   getAdminStats,
   getAllUsers,
   deleteUser,
   getAllJobsAdmin,
   deleteJobAdmin,
+  getUserById,
+  downloadUserResume
 };
