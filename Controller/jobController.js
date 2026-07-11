@@ -10,9 +10,9 @@ const createJob = async (req, res) => {
         message: "Please provide all required fields",
       });
     }
-    if (req.user.role !== "JobProvider") {
+    if (req.user.role !== "Employer") {
       return res.status(403).json({
-        message: "Only Job providers can create jobs",
+        message: "Only Employer can create jobs",
       });
     }
 
@@ -145,7 +145,7 @@ const deleteJob = async (req, res) => {
   }
 };
 
-// Get Logged-in Provider's Jobs
+// Get Logged-in Employer's Jobs
 const getMyJobs = async (req, res) => {
   try {
     const jobs = await Job.findAll({

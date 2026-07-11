@@ -8,7 +8,7 @@ const getAdminStats = async (req, res) => {
   try {
     const totalUsers = await User.count({ where: { role: { [Op.ne]: "Admin" } } });
     const totalJobSeekers = await User.count({ where: { role: "JobSeeker" } });
-    const totalEmployers = await User.count({ where: { role: "JobProvider" } });
+    const totalEmployers = await User.count({ where: { role: "Employer" } });
     const totalJobs = await Job.count();
     const totalApplications = await Application.count();
 

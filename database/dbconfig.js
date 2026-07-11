@@ -15,8 +15,8 @@ const sequelize = new Sequelize(dburl, {
 
 const connectDb = async () => {
   try {
-    await sequelize.authenticate(); //connection check garna
-    await sequelize.sync({alter:false, force:false}); //exist data delete gardaina false ley
+    await sequelize.authenticate();
+    await sequelize.sync({alter:false, force:false});
     console.log("Connection has been established");
   } catch (error) {
     console.error("Unable to connect the database:", error);
