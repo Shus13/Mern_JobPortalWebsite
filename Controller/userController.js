@@ -6,20 +6,6 @@ const sendEmail = require("../utils/sendEmail");
 
 const path = require("path");
 
-const bcrypt = require("bcrypt");
-
-const saltRounds = 10;
-const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-
-const isMatch = await bcrypt.compare(password, hashedPassword);
-
-if (isMatch) {
-    console.log("Authentication Successful")
-} else {
-    console.log("Invalid Password")
-}
-
 const registerUser = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
